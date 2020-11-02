@@ -12,7 +12,7 @@ curl -v 'http://localhost:14000/authorize?response_type=code&state=1&client_id=1
 
 curl -v 'http://localhost:14000/token' \
 -H "Authorization: Basic $(echo -ne '1234:aabbccdd' | base64)" \
--d 'grant_type=authorization_code&code=1RY7kUoaSq6fKR2BtUJoDw' | jq
+-d 'grant_type=authorization_code&code=4x2VLEkuR-CgzEE8HnyBjg' | jq
 
 curl -v 'http://localhost:14000/token' \
 -H 'Authorization: Basic MTIzNDphYWJiY2NkZA==' \
@@ -39,3 +39,12 @@ curl -v 'http://localhost:14000/token' \
 -d 'grant_type=refresh_token&refresh_token=Q2y_YrNgToWtXj8O-Geb7A'
 ```
 
+------------------------------------------------------------------
+
+# Generate RS256
+Remember to change repo's keys in the production!
+
+```bash
+ssh-keygen -t rsa -b 4096 -m PEM -f jwt.key -q -N ""
+openssl rsa -in jwt.key -pubout -outform PEM -out jwt.key.pub
+```

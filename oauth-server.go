@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/RangelReale/osin"
@@ -10,8 +11,6 @@ import (
 )
 
 func main() {
-	fmt.Print("Start\n")
-	// ex.NewTestStorage implements the "osin.Storage" interface
 	config := osin.NewServerConfig()
 	config.RequirePKCEForPublicClients = true
 	config.AllowedAuthorizeTypes = osin.AllowedAuthorizeType{osin.CODE}
@@ -20,11 +19,20 @@ func main() {
 	server := osin.NewServer(config, ex.NewTestStorage())
 
 	var err error
-	if server.AccessTokenGen, err = genjwt.NewAccessTokenGenJWT(); err != nil {
+	var privatekeyPEM, publickeyPEM []byte
+
+	if privatekeyPEM, err = ioutil.ReadFile("cert/jwt.key"); err != nil {
 		panic(err)
 	}
 
-	// Authorization code endpoint
+	if publickeyPEM, err = ioutil.ReadFile("cert/jwt.key.pub"); err != nil {
+		panic(err)
+	}
+
+	if server.AccessTokenGen, err = genjwt.NewAccessTokenGenJWT(privatekeyPEM, publickeyPEM); err != nil {
+		panic(err)
+	}
+
 	http.HandleFunc("/authorize", func(w http.ResponseWriter, r *http.Request) {
 		resp := server.NewResponse()
 		defer resp.Close()
@@ -51,5 +59,6 @@ func main() {
 		osin.OutputJSON(resp, w, r)
 	})
 
+	fmt.Println("Start listening on port 14000")
 	http.ListenAndServe(":14000", nil)
 }
