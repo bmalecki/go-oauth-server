@@ -48,3 +48,10 @@ Remember to change repo's keys in the production!
 ssh-keygen -t rsa -b 4096 -m PEM -f jwt.key -q -N ""
 openssl rsa -in jwt.key -pubout -outform PEM -out jwt.key.pub
 ```
+
+# Run Docker Image
+
+```bash
+docker build -t oauth-server .
+docker run -v $PWD/cert:/app/cert -p14000:14000 oauth-server
+```
