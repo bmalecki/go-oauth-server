@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/RangelReale/osin"
+	"github.com/bmalecki/go-oauth-server/genjwt"
 	ex "github.com/bmalecki/go-oauth-server/storage"
 )
 
@@ -17,6 +18,11 @@ func main() {
 	config.AllowedAccessTypes = osin.AllowedAccessType{osin.AUTHORIZATION_CODE, osin.REFRESH_TOKEN}
 
 	server := osin.NewServer(config, ex.NewTestStorage())
+
+	var err error
+	if server.AccessTokenGen, err = genjwt.NewAccessTokenGenJWT(); err != nil {
+		panic(err)
+	}
 
 	// Authorization code endpoint
 	http.HandleFunc("/authorize", func(w http.ResponseWriter, r *http.Request) {
