@@ -1,3 +1,5 @@
+This repository shows an example usage of osin project: https://github.com/openshift/osin
+
 https://godoc.org/github.com/openshift/osin
 
 https://www.oauth.com/oauth2-servers/pkce/
